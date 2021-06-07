@@ -122,15 +122,11 @@ class Player:
         # Update speler coordinaten
         self.rect.x += dx
         self.rect.y += dy
-
-<<<<<<< HEAD
+        
         # ------- onderstaand is niet nodig. Dit check is al in de collision op y-as
         # if self.rect.bottom > screen_height:
         #     self.rect.bottom = screen_height
         #     dy = 0
-
-=======
->>>>>>> main
         # Tekent speler op het scherm
         screen.blit(self.image, self.rect)
 
