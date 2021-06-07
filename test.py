@@ -4,15 +4,15 @@ from pygame.locals import *
 pygame.init()
 
 # Afmetingen scherm
-screen_width = 1000
-screen_height = 900
+screen_width = 800
+screen_height = 800
 
 # Scherm aanmaken
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("CORONA SPEL DE DOORZETTERS")
 
 # Globale variabelen
-tile_size = 50
+tile_size = 40
 player_health = 100
 
 # Kleuren Health bar
@@ -21,6 +21,10 @@ LIGHT_GREEN = (153, 193, 64)
 YELLOW = (231, 180, 22)
 ORANGE = (219, 123, 43)
 RED = (204, 50, 50)
+
+#Kleuren algemeen
+WHITE = (255,255,255)
+BLACK = (0,0,0)
 
 # Afbeeldingen laden (eigen pad toevoegen niet nodig)
 sun_img = pygame.image.load("zon.png")
@@ -57,7 +61,7 @@ pygame.mixer.music.play(-1)
 class Player:
     def __init__(self, x, y):
         img = rutten_img
-        self.image = pygame.transform.scale(img, (40, 80))
+        self.image = pygame.transform.scale(img, (40, 40))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -163,23 +167,23 @@ class World:
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
-            pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
+            pygame.draw.rect(screen, (WHITE), tile[1], 2)
 
 
 # Health bar tekenen (loopt af met stappen van 20)
 def draw_health():
-    pygame.draw.rect(screen, (0, 0, 0), (700, 25, 250, 50), 2)
+    pygame.draw.rect(screen, (BLACK), (560, 20, 200, 40), 2)
 
     if player_health == 100:
-        pygame.draw.rect(screen, (DARK_GREEN), (700, 25, 250, 50))
+        pygame.draw.rect(screen, (DARK_GREEN), (560, 20, 200, 40))
     elif player_health == 80:
-        pygame.draw.rect(screen, (LIGHT_GREEN), (700, 25, 200, 50))
+        pygame.draw.rect(screen, (LIGHT_GREEN), (560, 20, 160, 40))
     elif player_health == 60:
-        pygame.draw.rect(screen, (YELLOW), (700, 25, 150, 50))
+        pygame.draw.rect(screen, (YELLOW), (560, 20, 120, 40))
     elif player_health == 40:
-        pygame.draw.rect(screen, (ORANGE), (700, 25, 100, 50))
+        pygame.draw.rect(screen, (ORANGE), (560, 20, 80, 40))
     elif player_health == 20:
-        pygame.draw.rect(screen, (RED), (700, 25, 50, 50))
+        pygame.draw.rect(screen, (RED), (560, 20, 40, 40))
     elif player_health == 0:
         print("GAME OVER")
 
@@ -196,6 +200,8 @@ world_data = [
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
