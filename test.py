@@ -22,31 +22,17 @@ YELLOW = (231, 180, 22)
 ORANGE = (219, 123, 43)
 RED = (204, 50, 50)
 
-# Afbeeldingen laden (eigen pad toevoegen)
-sun_img = pygame.image.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/zon.png"
-)
-bg_img = pygame.image.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/background.png"
-)
-dirt_img = pygame.image.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/modder.png"
-)
-grass_img = pygame.image.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/gras.png"
-)
-rutten_img = pygame.image.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/rutten.png"
-)
-corona_img = pygame.image.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/corona.png"
-)
+# Afbeeldingen laden (eigen pad toevoegen niet nodig)
+sun_img = pygame.image.load("zon.png")
+bg_img = pygame.image.load("background.png")
+dirt_img = pygame.image.load("modder.png")
+grass_img = pygame.image.load("gras.png")
+rutten_img = pygame.image.load("rutten.png")
+corona_img = pygame.image.load("corona.png")
 
 # Muziek inladen
 pygame.mixer.init()
-pygame.mixer.music.load(
-    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/background_music.mp3"
-)
+pygame.mixer.music.load("background_music.mp3")
 pygame.mixer.music.play(-1)
 
 
