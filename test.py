@@ -78,7 +78,7 @@ class Player:
         # Bewegen
         key = pygame.key.get_pressed()
         # Beweging naar links
-        if key[pygame.K_SPACE] and self.jumped == False:
+        if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
             self.vel_y = -15
             self.jumped = True
 
@@ -98,7 +98,7 @@ class Player:
         dy += self.vel_y
 
         # checken op botsingen met platformen
-        # self.in_air = True --> nog even uitzoeken
+        self.in_air = True 
         for tile in world.tile_list:
             # checken op botsing op x-as
             if tile[1].colliderect(
@@ -117,7 +117,7 @@ class Player:
                 elif self.vel_y >= 0:
                     dy = tile[1].top - self.rect.bottom
                     self.vel_y = 0
-                    # self.in_air= False --> nog even uitzoeken
+                    self.in_air= False
 
         # Update speler coordinaten
         self.rect.x += dx
