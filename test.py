@@ -28,23 +28,24 @@ bg_img = pygame.image.load("background.png")
 dirt_img = pygame.image.load("modder.png")
 grass_img = pygame.image.load("gras.png")
 rutten_img = pygame.image.load("rutten.png")
-corona_img = pygame.image.load("corona.jpg")
+corona_img = pygame.image.load("corona.png")
 
 # Grid tekenen van de wereld
-def draw_grid():
-    for line in range(0, 20):
-        pygame.draw.line(
-            screen,
-            (255, 255, 255),
-            (0, line * tile_size),
-            (screen_width, line * tile_size),
-        )
-        pygame.draw.line(
-            screen,
-            (255, 255, 255),
-            (line * tile_size, 0),
-            (line * tile_size, screen_height),
-        )
+# ----- deze kan er gewoon uit blijven toch?-----
+# def draw_grid():
+#     for line in range(0, 20):
+#         pygame.draw.line(
+#             screen,
+#             (255, 255, 255),
+#             (0, line * tile_size),
+#             (screen_width, line * tile_size),
+#         )
+#         pygame.draw.line(
+#             screen,
+#             (255, 255, 255),
+#             (line * tile_size, 0),
+#             (line * tile_size, screen_height),
+#         )
 
 #Player parent class
 class Player:
@@ -83,6 +84,24 @@ class Player:
             self.vel_y = 10
         dy += self.vel_y
 
+        #checken op botsingen met platformen
+        #self.in_air = True --> nog even uitzoeken
+        for tile in world.tile_list:
+            #checken op botsing op x-as
+            if tile [1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+                dx=0
+            #checken voor botsing op de y-as
+            if tile [1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+                #checken of speler springt
+                if self.vel_y<0:
+                    dy = tile[1].bottom-self.rect.top
+                    self.vel_y=0
+                #checken of de speler valt
+                elif self.vel_y>=0:
+                    dy = tile[1].top-self.rect.bottom
+                    self.vel_y=0
+                    #self.in_air= False --> nog even uitzoeken
+
         # Update speler coordinaten
         self.rect.x += dx
         self.rect.y += dy
@@ -117,19 +136,21 @@ class World:
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
-                if tile == 3: #corona
-                    img = pygame.transform.scale(corona_img, (tile_size, tile_size))
-                    img_rect = img.get_rect()
-                    img_rect.x = col_count * tile_size
-                    img_rect.y = row_count * tile_size
-                    tile = (img, img_rect)
-                    self.tile_list.append(tile)
+                #-------- corona kunnen we misschien beter los plaatsen ipv. in het grid-----
+                # if tile == 3: #corona
+                #     img = pygame.transform.scale(corona_img, (tile_size, tile_size))
+                #     img_rect = img.get_rect()
+                #     img_rect.x = col_count * tile_size
+                #     img_rect.y = row_count * tile_size
+                #     tile = (img, img_rect)
+                #     self.tile_list.append(tile)
                 col_count += 1
             row_count += 1
 
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
+            pygame.draw.rect(screen,(255,255,255),tile[1],2)
 
 #Health bar tekenen (loopt af met stappen van 20)
 def draw_health():
@@ -161,12 +182,12 @@ world_data = [
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 1],
     [1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -187,7 +208,7 @@ while run:
     world.draw() #Plaatsen wereld tegels
     player.update() #Plaatsen speler
 
-    draw_grid() #Plaatsen grid
+     #draw_grid() #Plaatsen grid --> hoeft niet toch?
 
     draw_health() #Plaatsen health bar
 
