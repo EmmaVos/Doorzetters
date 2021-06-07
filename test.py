@@ -122,8 +122,12 @@ class Player:
         self.rect.x += dx
         self.rect.y += dy
 
+<<<<<<< Updated upstream
         #------- onderstaand is niet nodig. Dit check is al in de collision op y-as
         # if self.rect.bottom > screen_height:   
+=======
+        # if self.rect.bottom > screen_height:
+>>>>>>> Stashed changes
         #     self.rect.bottom = screen_height
         #     dy = 0
 
