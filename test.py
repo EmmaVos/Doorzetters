@@ -256,6 +256,7 @@ menu_button = Button(50,20, menu_img)
 # Game mainloop
 run = True
 while run:
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -270,10 +271,10 @@ while run:
                 main_menu = False
         else: #Indent alles hieronder in de else statement
 
-        world.draw()  # Plaatsen wereld tegels
-        player.update()  # Plaatsen speler
+            world.draw()  # Plaatsen wereld tegels
+            player.update()  # Plaatsen speler
 
-        draw_health()  # Plaatsen health bar
+            draw_health()  # Plaatsen health bar
 
     pygame.display.update()  # Update het scherm
 
