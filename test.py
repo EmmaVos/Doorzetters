@@ -269,13 +269,16 @@ while run:
                 run = False
             if start_button.draw():
                 main_menu = False
-        else: #Indent alles hieronder in de else statement
+    else: #Indent alles hieronder in de else statement
 
-            world.draw()  # Plaatsen wereld tegels
-            player.update()  # Plaatsen speler
+        world.draw()  # Plaatsen wereld tegels
+        player.update()  # Plaatsen speler
 
-            draw_health()  # Plaatsen health bar
+        draw_health()  # Plaatsen health bar
 
+        if menu_button.draw():
+            main_menu = True
+            
     pygame.display.update()  # Update het scherm
 
 pygame.quit()
