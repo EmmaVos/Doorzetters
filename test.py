@@ -15,6 +15,7 @@ pygame.display.set_caption("CORONA SPEL DE DOORZETTERS")
 # Globale variabelen
 tile_size = 40
 player_health = 100
+main_menu = True
 
 # Kleuren Health bar
 DARK_GREEN = (45, 201, 55)
@@ -35,28 +36,15 @@ grass_img = pygame.image.load("gras.png")
 rutten_img = pygame.image.load("rutten.png")
 corona_img = pygame.image.load("corona.png")
 
+start_img = pygame.image.load("start.png")
+exit_img = pygame.image.load("exit.png")
+menu_img = pygame.image.load("menu.png")
+
+
 # Muziek inladen
 pygame.mixer.init()
 pygame.mixer.music.load("background_music.mp3")
 pygame.mixer.music.play(-1)
-
-
-# Grid tekenen van de wereld
-# ----- deze kan er gewoon uit blijven toch?-----
-# def draw_grid():
-#     for line in range(0, 20):
-#         pygame.draw.line(
-#             screen,
-#             (255, 255, 255),
-#             (0, line * tile_size),
-#             (screen_width, line * tile_size),
-#         )
-#         pygame.draw.line(
-#             screen,
-#             (255, 255, 255),
-#             (line * tile_size, 0),
-#             (line * tile_size, screen_height),
-#         )
 
 # Player parent class
 class Player:
@@ -123,10 +111,6 @@ class Player:
         self.rect.x += dx
         self.rect.y += dy
         
-        # ------- onderstaand is niet nodig. Dit check is al in de collision op y-as
-        # if self.rect.bottom > screen_height:
-        #     self.rect.bottom = screen_height
-        #     dy = 0
         screen.blit(self.image, self.rect)
 
 
@@ -187,6 +171,31 @@ def draw_health():
     elif player_health == 0:
         print("GAME OVER")
 
+class Button:
+    def __init__(self,x,y,image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.clicked = False
+
+    def draw(self):
+        action = False
+        pos = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                action = True
+                self.clicked = True
+
+        if pygame.mouse.get_pressed()[0]:
+            self.clicked = False
+
+
+        #teken button
+        screen.blit(self.image,self.rect)
+
+        return action
 
 # data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
 world_data = [
@@ -239,24 +248,32 @@ world_data2 = [
 player = Player(100, screen_height - 130)
 world = World(world_data)
 
+#Buttons
+start_button = Button(screen_width//2-250, screen_height//2, start_img)
+exit_button = Button(screen_width//2+150, screen_height//2, exit_img)
+menu_button = Button(50,20, menu_img)
+
 # Game mainloop
 run = True
 while run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
 
     screen.blit(bg_img, (0, 0))  # Plaatsen achtergrond
     screen.blit(sun_img, (100, 100))  # Plaatsen zon
 
-    world.draw()  # Plaatsen wereld tegels
-    player.update()  # Plaatsen speler
+    if main_menu == True:
+            if exit_button.draw():
+                run = False
+            if start_button.draw():
+                main_menu = False
+        else: #Indent alles hieronder in de else statement
 
-    # draw_grid() #Plaatsen grid --> hoeft niet toch?
+        world.draw()  # Plaatsen wereld tegels
+        player.update()  # Plaatsen speler
 
-    draw_health()  # Plaatsen health bar
-
-    # Zorgt voor het sluiten van de game
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+        draw_health()  # Plaatsen health bar
 
     pygame.display.update()  # Update het scherm
 
