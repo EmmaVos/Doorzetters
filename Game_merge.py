@@ -44,6 +44,7 @@ menu_img_og = pygame.image.load("menu.png")
 start_game_img_og = pygame.image.load("start_game.png")
 expl_img_og = pygame.image.load("expl.png")
 back_img_og = pygame.image.load("terug.png")
+start_screen_og = pygame.image.load("start_window.png")
 
 #Afbeeldingen startscherm sizen 
 start_img = pygame.transform.scale(start_img_og, (240,120))
@@ -52,6 +53,7 @@ menu_img = pygame.transform.scale(menu_img_og, (120,40))
 start_game_img = pygame.transform.scale(start_game_img_og, (240,120))
 expl_img = pygame.transform.scale(expl_img_og, (800,800))
 back_img = pygame.transform.scale(back_img_og, (240,120))
+start_screen_img = pygame.transform.scale(start_screen_og,(800,800))
 
 
 #Countdown afbeeldingen laden
@@ -396,6 +398,7 @@ while run:
 
     
     if main_menu == True:
+        screen.blit(start_screen_img, (0,0))
         if exit_button.draw():
             run = False
         if start_button.draw():
