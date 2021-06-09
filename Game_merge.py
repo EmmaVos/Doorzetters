@@ -16,6 +16,8 @@ pygame.display.set_caption("CORONA SPEL DE DOORZETTERS")
 tile_size = 40
 #player_health = 100
 main_menu = True
+expl_menu = False
+play_timer = True
 
 # Kleuren Health bar
 DARK_GREEN = (45, 201, 55)
@@ -35,9 +37,19 @@ dirt_img = pygame.image.load("modder.png")
 grass_img = pygame.image.load("gras.png")
 rutten_img = pygame.image.load("rutten.png")
 
+#startscherm afbeeldingen
 start_img = pygame.image.load("start.png")
 exit_img = pygame.image.load("exit.png")
 menu_img = pygame.image.load("menu.png")
+
+start_game_img = pygame.image.load("start_game.png")
+expl_img = pygame.image.load("expl.png")
+back_img = pygame.image.load("terug.png")
+
+#Countdown afbeeldingen
+een_img = pygame.image.load("1.png")
+twee_img = pygame.image.load("2.png")
+drie_img = pygame.image.load("3.png")
 
 #Vijand inladen
 corona_p_img = pygame.image.load("corona_paars.png")
@@ -277,6 +289,16 @@ def hit_cooldown():
             player.first_kill = False
             print("cooldown complete")
 
+def timer():
+    timer_array = [een_img, twee_img, drie_img]
+
+    seconds = 2
+    while seconds >= 0:
+        screen.blit(timer_array[seconds], (screen_width/2, screen_height/2))
+        pygame.display.update()
+        pygame.time.delay(1000)
+        seconds -= 1
+
 # data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
 world_data = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -341,6 +363,8 @@ world = World(world_data)
 start_button = Button(screen_width//2-250, screen_height//2, start_img)
 exit_button = Button(screen_width//2+150, screen_height//2, exit_img)
 menu_button = Button(50,20, menu_img)
+start_game_button = Button(screen_width/2, 600, start_game_img)
+back_button = Button(0, 600, back_img)
 
 
 
@@ -360,10 +384,19 @@ while run:
 
     
     if main_menu == True:
-            if exit_button.draw():
-                run = False
-            if start_button.draw():
-                main_menu = False
+        if exit_button.draw():
+            run = False
+        if start_button.draw():
+            main_menu = False
+            expl_menu = True
+    elif expl_menu == True:
+        screen.blit(expl_img, (screen_width/2, screen_height/2))
+        if start_game_button.draw():
+            expl_menu = False
+            play_timer = True 
+        if back_button.draw():
+            expl_menu = False
+            main_menu = True
     else: #Indent alles hieronder in de else statement
 
         world.draw() 
@@ -386,6 +419,10 @@ while run:
 
         if menu_button.draw():
             main_menu = True
+
+        if play_timer:
+            timer()
+            play_timer = False
             
     pygame.display.update()  # Update het scherm
 
