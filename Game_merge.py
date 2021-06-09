@@ -30,26 +30,38 @@ RED = (204, 50, 50)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Afbeeldingen laden (eigen pad toevoegen niet nodig)
+# Afbeeldingen laden
 sun_img = pygame.image.load("zon.png")
 bg_img = pygame.image.load("background.png")
 dirt_img = pygame.image.load("modder.png")
 grass_img = pygame.image.load("gras.png")
 rutten_img = pygame.image.load("rutten.png")
 
-#startscherm afbeeldingen
-start_img = pygame.image.load("start.png")
-exit_img = pygame.image.load("exit.png")
-menu_img = pygame.image.load("menu.png")
+#startscherm afbeeldingen laden
+start_img_og = pygame.image.load("start.png")
+exit_img_og = pygame.image.load("exit.png")
+menu_img_og = pygame.image.load("menu.png")
+start_game_img_og = pygame.image.load("start_game.png")
+expl_img_og = pygame.image.load("expl.png")
+back_img_og = pygame.image.load("terug.png")
 
-start_game_img = pygame.image.load("start_game.png")
-expl_img = pygame.image.load("expl.png")
-back_img = pygame.image.load("terug.png")
+#Afbeeldingen startscherm sizen 
+start_img = pygame.transform.scale(start_img_og, (240,120))
+exit_img = pygame.transform.scale(exit_img_og, (240,120))
+menu_img = pygame.transform.scale(menu_img_og, (120,40))
+start_game_img = pygame.transform.scale(start_game_img_og, (240,120))
+expl_img = pygame.transform.scale(expl_img_og, (800,800))
+back_img = pygame.transform.scale(back_img_og, (240,120))
 
-#Countdown afbeeldingen
-een_img = pygame.image.load("1.png")
-twee_img = pygame.image.load("2.png")
-drie_img = pygame.image.load("3.png")
+
+#Countdown afbeeldingen laden
+een_img_og = pygame.image.load("1.png")
+twee_img_og = pygame.image.load("2.png")
+drie_img_og = pygame.image.load("3.png")
+
+een_img = pygame.transform.scale(een_img_og,(400,400))
+twee_img = pygame.transform.scale(twee_img_og,(400,400))
+drie_img = pygame.transform.scale(drie_img_og,(400,400))
 
 #Vijand inladen
 corona_p_img = pygame.image.load("corona_paars.png")
@@ -294,7 +306,7 @@ def timer():
 
     seconds = 2
     while seconds >= 0:
-        screen.blit(timer_array[seconds], (screen_width/2, screen_height/2))
+        screen.blit(timer_array[seconds], (200, 200))
         pygame.display.update()
         pygame.time.delay(1000)
         seconds -= 1
@@ -356,15 +368,15 @@ corona_paars_no_move_group =pygame.sprite.Group()
 
 
 # Objecten
-player = Player(100, screen_height - 130)
+player = Player(100, screen_height - 100)
 world = World(world_data)
 
 #Buttons
-start_button = Button(screen_width//2-250, screen_height//2, start_img)
-exit_button = Button(screen_width//2+150, screen_height//2, exit_img)
-menu_button = Button(50,20, menu_img)
-start_game_button = Button(screen_width/2, 600, start_game_img)
-back_button = Button(0, 600, back_img)
+start_button = Button(100,340, start_img)
+exit_button = Button(450,340, exit_img)
+menu_button = Button(20,20, menu_img)
+start_game_button = Button(460, 630, start_game_img)
+back_button = Button(100, 630, back_img)
 
 
 
@@ -390,7 +402,7 @@ while run:
             main_menu = False
             expl_menu = True
     elif expl_menu == True:
-        screen.blit(expl_img, (screen_width/2, screen_height/2))
+        screen.blit(expl_img, (0, 0))
         if start_game_button.draw():
             expl_menu = False
             play_timer = True 
