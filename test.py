@@ -4,6 +4,9 @@ from pygame.locals import *
 
 pygame.init()
 
+clock = pygame.time.Clock()
+fps = 60
+
 # Afmetingen scherm
 screen_width = 800
 screen_height = 800
@@ -29,22 +32,41 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # Afbeeldingen laden (eigen pad toevoegen niet nodig)
-sun_img = pygame.image.load("zon.png")
-bg_img = pygame.image.load("background.png")
-dirt_img = pygame.image.load("modder.png")
-grass_img = pygame.image.load("gras.png")
-rutten_img = pygame.image.load("rutten.png")
-corona_img = pygame.image.load("corona.png")
+sun_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/zon.png"
+)
+bg_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/background.png"
+)
+dirt_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/modder.png"
+)
+grass_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/gras.png"
+)
+rutten_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/rutten.png"
+)
+# corona_img = pygame.image.load("corona.png")
 
-start_img = pygame.image.load("start.png")
-exit_img = pygame.image.load("exit.png")
-menu_img = pygame.image.load("menu.png")
+start_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/start.png"
+)
+exit_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/exit.png"
+)
+menu_img = pygame.image.load(
+    "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/menu.png"
+)
 
 
 # Muziek inladen
-pygame.mixer.init()
-pygame.mixer.music.load("background_music.mp3")
-pygame.mixer.music.play(-1)
+# pygame.mixer.init()
+# pygame.mixer.music.load("/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/background_music.mp3")
+# pygame.mixer.music.play(-1)
+# spring = pygame.mixer.Sound(
+#   "/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/spring.mp3"
+# )
 
 # Player parent class
 class Player:
@@ -69,6 +91,9 @@ class Player:
         if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
             self.vel_y = -15
             self.jumped = True
+            # pygame.mixer.music.stop()
+            # pygame.mixer.Sound.play(spring)
+            # pygame.mixer.music.play()
 
         if key[pygame.K_SPACE] == False:
             self.jumped = False
@@ -86,7 +111,7 @@ class Player:
         dy += self.vel_y
 
         # checken op botsingen met platformen
-        self.in_air = True 
+        self.in_air = True
         for tile in world.tile_list:
             # checken op botsing op x-as
             if tile[1].colliderect(
@@ -105,12 +130,16 @@ class Player:
                 elif self.vel_y >= 0:
                     dy = tile[1].top - self.rect.bottom
                     self.vel_y = 0
-                    self.in_air= False
+                    self.in_air = False
 
         # Update speler coordinaten
         self.rect.x += dx
         self.rect.y += dy
-        
+
+        # ------- onderstaand is niet nodig. Dit check is al in de collision op y-as
+        # if self.rect.bottom > screen_height:
+        #     self.rect.bottom = screen_height
+        #     dy = 0
         screen.blit(self.image, self.rect)
 
 
@@ -171,8 +200,9 @@ def draw_health():
     elif player_health == 0:
         print("GAME OVER")
 
+
 class Button:
-    def __init__(self,x,y,image):
+    def __init__(self, x, y, image):
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -191,11 +221,11 @@ class Button:
         if pygame.mouse.get_pressed()[0]:
             self.clicked = False
 
-
-        #teken button
-        screen.blit(self.image,self.rect)
+        # teken button
+        screen.blit(self.image, self.rect)
 
         return action
+
 
 # data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
 world_data = [
@@ -221,55 +251,29 @@ world_data = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
 
-world_data2 = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 1],
-    [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-]
 
 # Objecten
 player = Player(100, screen_height - 130)
 world = World(world_data)
 
-#Buttons
-start_button = Button(screen_width//2-250, screen_height//2, start_img)
-exit_button = Button(screen_width//2+150, screen_height//2, exit_img)
-menu_button = Button(50,20, menu_img)
+# Buttons
+start_button = Button(screen_width // 2 - 250, screen_height // 2, start_img)
+exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
+menu_button = Button(50, 20, menu_img)
 
 # Game mainloop
 run = True
 while run:
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
+    clock.tick
     screen.blit(bg_img, (0, 0))  # Plaatsen achtergrond
     screen.blit(sun_img, (100, 100))  # Plaatsen zon
 
     if main_menu == True:
-            if exit_button.draw():
-                run = False
-            if start_button.draw():
-                main_menu = False
-    else: #Indent alles hieronder in de else statement
+        if exit_button.draw():
+            run = False
+        if start_button.draw():
+            main_menu = False
+    else:  # Indent alles hieronder in de else statement
 
         world.draw()  # Plaatsen wereld tegels
         player.update()  # Plaatsen speler
@@ -278,7 +282,7 @@ while run:
 
         if menu_button.draw():
             main_menu = True
-            
+
     pygame.display.update()  # Update het scherm
 
 pygame.quit()

@@ -1,4 +1,3 @@
-######### Werken in deze file!!!!!!! ############
 import pygame
 from pygame.locals import *
 
@@ -151,67 +150,68 @@ class Player:
 
         if (
             pygame.sprite.spritecollide(self, corona_paars_group, False)
-            and self.first_kill == False
+            and self.is_hit == False
         ):
             self.health -= 10
-            self.first_kill = True
-            self.hit_time_enemy = pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 500
 
             # check for collision with enemie
         if (
             pygame.sprite.spritecollide(self, corona_groen_group, False)
-            and self.first_kill == False
+            and self.is_hit == False
         ):
             self.health -= 20
-            self.first_kill = True
-            self.hit_time_enemy = pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 500
 
         if (
             pygame.sprite.spritecollide(self, corona_paars_no_move_group, False)
-            and self.first_kill == False
+            and self.is_hit == False
         ):
             self.health -= 10
-            self.first_kill = True
-            self.hit_time_enemy = pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 500
 
         if (
             pygame.sprite.spritecollide(self, corona_groen_no_move_group, False)
-            and self.first_kill == False
+            and self.is_hit == False
         ):
             self.health -= 20
-            self.first_kill = True
-            self.hit_time_enemy = pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 500
 
         ######## collision met spaar spullen #######
 
         if (
             pygame.sprite.spritecollide(self, mondkapje_group, False)
-            and self.first_kill == False
+            and self.is_hit == False
         ):
             self.health += 20
             print("mondkapje", self.health)
-            self.first_kill = True
-            self.hit_time_enemy = pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 1000
 
         if (
             pygame.sprite.spritecollide(self, vaccin_group, False)
-            and self.first_save == False
+            and self.is_hit == False
         ):
             self.save += 1
             print("injectie", self.save)
-            self.first_save = True
-            self.hit_time_interactable = pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 1000
 
         if (
             pygame.sprite.spritecollide(self, deur_group, False)
-            and self.first_kill == False
+            and self.is_hit == False
         ):
             if player.save == 3:
                 Deur.is_hit = True
+                self.is_hit = True
                 print(Deur.is_hit)
                 self.hit_time = pygame.time.get_ticks() + 2000
             else:
-                print("You have to earn more stuff")
+                screen.blit(menu_img, (300,300))
 
         # Update speler coordinaten
         self.rect.x += dx
@@ -327,7 +327,6 @@ class World:
                 if tile == 7:
                     deur = Deur(col_count * tile_size, row_count * tile_size, deur_img)
                     deur_group.add(deur)
-
                 if tile == 8:
                     mondkapje = Mondkapje(
                         col_count * tile_size, row_count * tile_size, mondkapje_img
@@ -415,6 +414,11 @@ def hit_cooldown():
             player.is_hit = False
             print("cooldown complete")
 
+        ### hit_cooldown() wordt aangeroepen in de mainloop ###
+
+
+# data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
+
 
 def beginning_timer():
     timer_array = [een_img, twee_img, drie_img]
@@ -428,42 +432,34 @@ def beginning_timer():
 
 
 # data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
-def saving_cooldown():
-    if player.first_save == True:
-        if player.hit_time_interactable + 4000 < pygame.time.get_ticks():
-            player.first_save = False
-            print("saving complete")
-
-
-# data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
 world_data = [
     [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 4, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4, 0, 0, 0, 0, 0, 1],
+        [1, 8, 0, 0, 0, 0, 0, 0, 4, 0, 5, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+        [1, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 0, 2, 2, 2, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+        [1, 0, 4, 0, 0, 0, 2, 2, 0, 0, 3, 0, 0, 5, 0, 0, 0, 0, 0, 1],
+        [1, 2, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+        [1, 6, 0, 0, 0, 0, 2, 2, 0, 0, 3, 0, 0, 4, 0, 0, 0, 0, 0, 1],
         [1, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 3, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 9, 9, 7, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1],
-        [1, 0, 0, 0, 9, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+        [1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 7, 0, 5, 0, 0, 0, 0, 5, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 0, 0, 0, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
     [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -498,7 +494,7 @@ currentLevel = 0
 
 # Objecten
 player = Player(100, screen_height - 100)
-world = World(world_data)
+
 
 # Buttons
 start_button = Button(100, 340, start_img)
@@ -539,6 +535,7 @@ while run:
 
         world.draw()
 
+        #hieronder blijft hangen
         corona_groen_group.draw(screen)
         corona_groen_group.update()
         corona_paars_group.draw(screen)
@@ -553,14 +550,18 @@ while run:
         mondkapje_group.update()
         vaccin_group.update()
 
-        if Deur.is_hit == True and Vaccin > 3:
+        if Deur.is_hit == True:
             print("Joepie het werkt eindelijk")
-
-            currentLevel += 1
+            currentLevel += 1 
             world = World(world_data[currentLevel])
             Deur.is_hit = False
+        # elif Deur.is_hit == False:
+        #     screen.blit(menu_img, (200,200))
+
 
         player.update()
+
+        hit_cooldown()
 
         draw_savings()
         draw_health()  # Plaatsen health bar
