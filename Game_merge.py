@@ -16,8 +16,10 @@ pygame.display.set_caption("CORONA SPEL DE DOORZETTERS")
 tile_size = 40
 #player_health = 100
 main_menu = True
+draw_world = True
 
-# Kleuren Health bar
+
+# Kleuren Health bar 
 DARK_GREEN = (45, 201, 55)
 LIGHT_GREEN = (153, 193, 64)
 YELLOW = (231, 180, 22)
@@ -42,6 +44,10 @@ menu_img = pygame.image.load("menu.png")
 #Vijand inladen
 corona_p_img = pygame.image.load("corona_paars.png")
 corona_g_img = pygame.image.load("corona_groen.png")
+kappie_img = pygame.image.load("kapje.png")
+deur_img = pygame.image.load("poort.png")
+mondkapje_img = pygame.image.load("kapje.png")
+vaccin_img = pygame.image.load("spuit.png")
 
 # # Muziek inladen
 # pygame.mixer.init()
@@ -61,9 +67,12 @@ class Player:
         self.vel_y = 0
         self.jumped = False
         self.health = 100
-        self.save = 0
+        self.save = 3
         self.first_kill = False
-        self.hit_time = 0
+        self.hit_time_enemy = 0
+        self.hit_time_interactable = 0
+        self.first_save = False
+
 
 
 
@@ -117,27 +126,52 @@ class Player:
         if pygame.sprite.spritecollide(self,corona_paars_group, False) and self.first_kill == False:
             self.health -=10
             self.first_kill = True
-            self.hit_time=pygame.time.get_ticks()
+            self.hit_time_enemy=pygame.time.get_ticks()
          
 
             #check for collision with enemie
         if pygame.sprite.spritecollide(self,corona_groen_group, False) and self.first_kill == False:
             self.health -=20
-            print("groen" , self.health)
             self.first_kill = True
-            self.hit_time=pygame.time.get_ticks()
+            self.hit_time_enemy=pygame.time.get_ticks()
 
         if pygame.sprite.spritecollide(self,corona_paars_no_move_group, False) and self.first_kill == False:
             self.health -=10
-            print("groen" , self.health)
             self.first_kill = True
-            self.hit_time=pygame.time.get_ticks()
+            self.hit_time_enemy=pygame.time.get_ticks()
         
         if pygame.sprite.spritecollide(self,corona_groen_no_move_group, False) and self.first_kill == False:
             self.health -=20
-            print("groen" , self.health)
             self.first_kill = True
-            self.hit_time=pygame.time.get_ticks()
+            self.hit_time_enemy=pygame.time.get_ticks()
+
+        ######## collision met spaar spullen #######
+
+        if pygame.sprite.spritecollide(self,mondkapje_group, False) and self.first_kill == False:
+            self.health +=20
+            print("mondkapje" , self.health)
+            self.first_kill = True
+            self.hit_time_enemy=pygame.time.get_ticks()
+
+        if pygame.sprite.spritecollide(self,vaccin_group, False) and self.first_save == False:
+            self.save += 1
+            print("injectie" , self.save)
+            self.first_save = True
+            self.hit_time_interactable= pygame.time.get_ticks()
+
+
+        if pygame.sprite.spritecollide(self,deur_group, False) and self.first_kill == False:
+            if player.save == 3: 
+                Deur.is_hit = True 
+                print(Deur.is_hit)
+                self.hit_time_enemy = pygame.time.get_ticks()
+            else:
+                print("You have to earn more stuff")
+         
+            
+
+            
+
 
         # Update speler coordinaten
         self.rect.x += dx
@@ -147,8 +181,37 @@ class Player:
 
         screen.blit(self.image, self.rect)
         return self.health
-        
+        return self.save
 
+
+class Deur(pygame.sprite.Sprite):
+    is_hit = False
+    def __init__(self,x,y,image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image ##     ## uitzoeken hoe dit werkt met twee verschillende groepen
+        self.image = pygame.transform.scale(image, (35, 35))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y  = y
+       
+
+class Mondkapje(pygame.sprite.Sprite):
+    def __init__(self,x,y,image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image ##     ## uitzoeken hoe dit werkt met twee verschillende groepen
+        self.image = pygame.transform.scale(image, (35, 35))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y  = y   
+
+class Vaccin(pygame.sprite.Sprite):
+    def __init__(self,x,y,image):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image ##     ## uitzoeken hoe dit werkt met twee verschillende groepen
+        self.image = pygame.transform.scale(image, (35, 35))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y  = y   
 
 class Vijand(pygame.sprite.Sprite):
     def __init__(self,x,y,image):
@@ -200,10 +263,21 @@ class World:
                     corona_groen_group.add(corona_groen)
                 if tile == 5:  # 3 had volgens mij nog geen inhoud
                     corona_paars_no_move = Vijand(col_count*tile_size, row_count*tile_size, corona_p_img )
-                    corona_paars_no_move_group.add(corona_paars)
+                    corona_paars_no_move_group.add(corona_paars_no_move)
                 if tile == 6:  # 4 had volgens mij nog geen inhoud
                     corona_groen_no_move = Vijand(col_count*tile_size, row_count*tile_size, corona_g_img)
-                    corona_groen_no_move_group.add(corona_groen)
+                    corona_groen_no_move_group.add(corona_groen_no_move)
+                if tile == 7:
+                    deur = Deur(col_count*tile_size, row_count*tile_size,deur_img)
+                    deur_group.add(deur)
+                if tile == 8:
+                    mondkapje = Mondkapje(col_count*tile_size, row_count*tile_size,mondkapje_img)
+                    mondkapje_group.add(mondkapje)
+                if tile == 9:
+                    vaccin = Vaccin(col_count*tile_size, row_count*tile_size,vaccin_img)
+                    vaccin_group.add(vaccin)
+
+
                 col_count += 1
             row_count += 1
 
@@ -229,6 +303,8 @@ def get_color(health):
 # Health bar tekenen (loopt af met stappen van 20)
 def draw_health():
     pygame.draw.rect(screen, (BLACK), (560, 20, 200, 40), 2)
+    if player.health >= 100:
+        player.health = 100
     pygame.draw.rect(screen, get_color(player.health), (560, 20, player.health * 2, 40))
     if player.health <= 0:
         print("GAME OVER")
@@ -236,11 +312,11 @@ def draw_health():
 def draw_savings():
     pygame.draw.rect(screen, (BLACK), (240, 20, 120, 40), 2)
     if player.save == 1:
-        pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 40, 40), 2)
+        pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 40, 40))
     if player.save == 2:
-        pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 80, 40), 2)
+        pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 80, 40))
     if player.save == 3:
-        pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 120, 40), 2)
+        pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 120, 40))
 
 
 
@@ -273,40 +349,24 @@ class Button:
 
 def hit_cooldown():
     if player.first_kill == True:
-        if player.hit_time + 500 < pygame.time.get_ticks():
+        if player.hit_time_enemy + 500 < pygame.time.get_ticks():
             player.first_kill = False
             print("cooldown complete")
 
-# data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
-world_data = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 4, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 1],
-    [1, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 4, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4, 0, 0, 0, 0, 0, 1],
-    [1, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 3, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1],
-    [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-]
+def saving_cooldown():
+    if player.first_save == True:
+        if player.hit_time_interactable + 4000 < pygame.time.get_ticks():
+            player.first_save = False
+            print("saving complete")
 
-world_data2 = [
+#data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
+world_data = [
+  [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -320,39 +380,63 @@ world_data2 = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 1],
+    [1, 0, 0, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  ],
+  [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 1],
     [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  ],
 ]
 
 
 #Vijandjes
-corona_groen_group= pygame.sprite.Group()
-corona_paars_group= pygame.sprite.Group()
-corona_groen_no_move_group =pygame.sprite.Group()
-corona_paars_no_move_group =pygame.sprite.Group()
+corona_groen_group = pygame.sprite.Group()
+corona_paars_group = pygame.sprite.Group()
+corona_groen_no_move_group = pygame.sprite.Group()
+corona_paars_no_move_group = pygame.sprite.Group()
+deur_group = pygame.sprite.Group()
+mondkapje_group = pygame.sprite.Group()
+vaccin_group = pygame.sprite.Group()
 
 
+currentLevel = 0
 
 # Objecten
-player = Player(100, screen_height - 130)
-world = World(world_data)
+player = Player(40, screen_height - 130)
 
 #Buttons
 start_button = Button(screen_width//2-250, screen_height//2, start_img)
 exit_button = Button(screen_width//2+150, screen_height//2, exit_img)
 menu_button = Button(50,20, menu_img)
 
-
+world = World(world_data[currentLevel])
 
 # Game mainloop
 run = True
 while run:
-    
+    print (Deur.is_hit, "mainloop")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
-    
 
 
     screen.blit(bg_img, (0, 0))  # Plaatsen achtergrond
@@ -366,22 +450,40 @@ while run:
                 main_menu = False
     else: #Indent alles hieronder in de else statement
 
-        world.draw() 
+        world.draw()
+            
         corona_groen_group.draw(screen)
         corona_groen_group.update()
         corona_paars_group.draw(screen)
         corona_paars_group.update()
         corona_groen_no_move_group.draw(screen)
         corona_paars_no_move_group.draw(screen)
+        deur_group.draw(screen)
+        mondkapje_group.draw(screen)
+        vaccin_group.draw(screen)
+        ######## proberen ########   testen of onderstaande regels wel nodig zijn
+        deur_group.update()
+        mondkapje_group.update()
+        vaccin_group.update()
 
+        if Deur.is_hit == True:
+            print("Joepie het werkt eindelijk")
+            currentLevel += 1
+            world = World(world_data[currentLevel])
+            Deur.is_hit = False
+            
 
 
         hit_cooldown()
+        saving_cooldown()
         player.update()
 
-        
-        draw_health()  # Plaatsen health bar
+
+            
+
         draw_savings()
+        draw_health()  # Plaatsen health bar
+        
 
 
         if menu_button.draw():
