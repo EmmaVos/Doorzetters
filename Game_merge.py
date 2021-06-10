@@ -1,3 +1,4 @@
+######### Werken in deze file!!!!!!! ############
 import pygame
 from pygame.locals import *
 
