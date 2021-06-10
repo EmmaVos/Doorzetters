@@ -211,7 +211,7 @@ class Player:
                 print(Deur.is_hit)
                 self.hit_time = pygame.time.get_ticks() + 2000
             else:
-                print("You have to earn more stuff")
+                screen.blit(menu_img, (300,300))
 
         # Update speler coordinaten
         self.rect.x += dx
@@ -535,6 +535,7 @@ while run:
 
         world.draw()
 
+        #hieronder blijft hangen
         corona_groen_group.draw(screen)
         corona_groen_group.update()
         corona_paars_group.draw(screen)
@@ -551,9 +552,12 @@ while run:
 
         if Deur.is_hit == True:
             print("Joepie het werkt eindelijk")
-            currentLevel += 1
+            currentLevel += 1 
             world = World(world_data[currentLevel])
             Deur.is_hit = False
+        # elif Deur.is_hit == False:
+        #     screen.blit(menu_img, (200,200))
+
 
         player.update()
 
