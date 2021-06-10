@@ -303,7 +303,7 @@ def hit_cooldown():
             player.first_kill = False
             print("cooldown complete")
 
-def timer():
+def beginning_timer():
     timer_array = [een_img, twee_img, drie_img]
 
     seconds = 2
@@ -436,7 +436,7 @@ while run:
             main_menu = True
 
         if play_timer:
-            timer()
+            beginning_timer()
             play_timer = False
             
     pygame.display.update()  # Update het scherm
