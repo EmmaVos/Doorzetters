@@ -93,11 +93,9 @@ class Player:
         self.vel_y = 0
         self.jumped = False
         self.health = 100
-        self.save = 3
-        self.first_kill = False
-        self.hit_time_enemy = 0
-        self.hit_time_interactable = 0
-        self.first_save = False
+        self.save = 0
+        self.hit_time = 0
+        self.is_hit = False
 
 
 
@@ -149,48 +147,49 @@ class Player:
             # checken op botsingen met enemies
             #check for collision with enemies
         
-        if pygame.sprite.spritecollide(self,corona_paars_group, False) and self.first_kill == False:
+        if pygame.sprite.spritecollide(self,corona_paars_group, False) and self.is_hit == False:
             self.health -=10
-            self.first_kill = True
-            self.hit_time_enemy=pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time =pygame.time.get_ticks()+ 500
          
 
             #check for collision with enemie
-        if pygame.sprite.spritecollide(self,corona_groen_group, False) and self.first_kill == False:
+        if pygame.sprite.spritecollide(self,corona_groen_group, False) and self.is_hit == False:
             self.health -=20
-            self.first_kill = True
-            self.hit_time_enemy=pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time =pygame.time.get_ticks()+ 500
 
-        if pygame.sprite.spritecollide(self,corona_paars_no_move_group, False) and self.first_kill == False:
+        if pygame.sprite.spritecollide(self,corona_paars_no_move_group, False) and self.is_hit == False:
             self.health -=10
-            self.first_kill = True
-            self.hit_time_enemy=pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time =pygame.time.get_ticks()+ 500
         
-        if pygame.sprite.spritecollide(self,corona_groen_no_move_group, False) and self.first_kill == False:
+        if pygame.sprite.spritecollide(self,corona_groen_no_move_group, False) and self.is_hit == False:
             self.health -=20
-            self.first_kill = True
-            self.hit_time_enemy=pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks()+ 500
 
         ######## collision met spaar spullen #######
 
-        if pygame.sprite.spritecollide(self,mondkapje_group, False) and self.first_kill == False:
+        if pygame.sprite.spritecollide(self,mondkapje_group, False) and self.is_hit == False:
             self.health +=20
             print("mondkapje" , self.health)
-            self.first_kill = True
-            self.hit_time_enemy=pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time =pygame.time.get_ticks()+ 1000
 
-        if pygame.sprite.spritecollide(self,vaccin_group, False) and self.first_save == False:
+        if pygame.sprite.spritecollide(self,vaccin_group, False) and self.is_hit == False:
             self.save += 1
             print("injectie" , self.save)
-            self.first_save = True
-            self.hit_time_interactable= pygame.time.get_ticks()
+            self.is_hit = True
+            self.hit_time = pygame.time.get_ticks() + 1000
 
-
-        if pygame.sprite.spritecollide(self,deur_group, False) and self.first_kill == False:
+        
+        if pygame.sprite.spritecollide(self,deur_group, False) and self.is_hit == False:
             if player.save == 3: 
                 Deur.is_hit = True 
+                self.is_hit = True
                 print(Deur.is_hit)
-                self.hit_time_enemy = pygame.time.get_ticks()
+                self.hit_time = pygame.time.get_ticks() + 2000
             else:
                 print("You have to earn more stuff")
          
@@ -374,10 +373,18 @@ class Button:
 
 
 def hit_cooldown():
-    if player.first_kill == True:
-        if player.hit_time_enemy + 500 < pygame.time.get_ticks():
-            player.first_kill = False
+    if player.is_hit == True:
+        if player.hit_time  < pygame.time.get_ticks():
+            player.is_hit = False
             print("cooldown complete")
+
+        ### hit_cooldown() wordt aangeroepen in de mainloop ###
+
+
+
+# data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
+
+
 
 def beginning_timer():
     timer_array = [een_img, twee_img, drie_img]
@@ -389,12 +396,6 @@ def beginning_timer():
         pygame.time.delay(1000)
         seconds -= 1
 
-# data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
-def saving_cooldown():
-    if player.first_save == True:
-        if player.hit_time_interactable + 4000 < pygame.time.get_ticks():
-            player.first_save = False
-            print("saving complete")
 
 #data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
 world_data = [
@@ -402,21 +403,21 @@ world_data = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 7, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 1],
     [1, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 4, 0, 9, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 8, 0, 0, 1],
+    [1, 8, 4, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 4, 0, 0, 0, 0, 0, 1],
+    [1, 6, 0, 0, 0, 0, 0, 0, 0, 8, 0, 3, 9, 4, 0, 0, 0, 0, 0, 1],
     [1, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 1],
-    [1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 3, 0, 9, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 3, 0, 0, 1],
+    [1, 0, 0, 8, 0, 9, 0, 9, 0, 7, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1],
     [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   ],
@@ -524,11 +525,10 @@ while run:
             
 
 
-        hit_cooldown()
-        saving_cooldown()
+        
         player.update()
 
-
+        hit_cooldown()
             
 
         draw_savings()
