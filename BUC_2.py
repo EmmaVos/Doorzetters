@@ -219,6 +219,7 @@ class Player:
                 self.is_hit = True
                 print(Deur.is_hit)
                 self.hit_time = pygame.time.get_ticks() + 2000
+                self.save = 0
             else:
                 screen.blit(more_vac_img, (400,20))
 
