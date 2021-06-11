@@ -2,6 +2,12 @@ import pygame
 from pygame.locals import *
 
 
+
+
+
+
+
+
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -19,6 +25,8 @@ pygame.display.set_caption("CORONA SPEL DE DOORZETTERS")
 tile_size = 40
 #player_health = 100
 main_menu = True
+
+hitDoor = False
 
 # Kleuren Health bar
 DARK_GREEN = (45, 201, 55)
@@ -65,6 +73,11 @@ bg_img = pygame.image.load("background.png")
 dirt_img = pygame.image.load("modder.png")
 grass_img = pygame.image.load("gras.png")
 rutten_img = pygame.image.load("rutten.png")
+<<<<<<< Updated upstream
+=======
+deur_img = pygame.image.load ("minideur.png")
+#corona_img = pygame.image.load("corona.png")
+>>>>>>> Stashed changes
 
 start_img = pygame.image.load("start.png")
 exit_img = pygame.image.load("exit.png")
@@ -77,6 +90,7 @@ corona_g_img = pygame.image.load("corona_groen.png")
 
 <<<<<<< Updated upstream
 # Muziek inladen
+<<<<<<< Updated upstream
 # pygame.mixer.init()
 # pygame.mixer.music.load("/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/background_music.mp3")
 # pygame.mixer.music.play(-1)
@@ -88,6 +102,11 @@ corona_g_img = pygame.image.load("corona_groen.png")
 # pygame.mixer.init()
 # pygame.mixer.music.load("background_music.mp3")
 # pygame.mixer.music.play(-1)
+>>>>>>> Stashed changes
+=======
+#pygame.mixer.init()
+#pygame.mixer.music.load("background_music.mp3")
+#pygame.mixer.music.play(-1)
 >>>>>>> Stashed changes
 
 # Player parent class
@@ -145,7 +164,14 @@ class Player:
             if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
                 dx = 0
             # checken voor botsing op de y-as
+<<<<<<< Updated upstream
             if tile[1].colliderect(self.rect.x , self.rect.y + dy, self.width, self.height):
+=======
+            if tile[1].colliderect(
+                self.rect.x, self.rect.y + dy, self.width, self.height
+            ):
+
+>>>>>>> Stashed changes
                 # checken of speler springt
                 if self.vel_y < 0:
                     dy = tile[1].bottom - self.rect.top
@@ -183,6 +209,10 @@ class Player:
             print("groen" , self.health)
             self.first_kill = True
             self.hit_time=pygame.time.get_ticks()
+
+            if tile[1].colliderect(
+                self.rect.x, self.rect.y, self.width, self.height
+            ): hitDoor = True
 
         # Update speler coordinaten
         self.rect.x += dx
@@ -226,7 +256,9 @@ class Vijand(pygame.sprite.Sprite):
 class World:
     def __init__(self, data):
         self.tile_list = []
-
+        #door
+        self.doorx = 0
+        self.doory = 0
         row_count = 0
         for row in data:
             col_count = 0
@@ -245,6 +277,7 @@ class World:
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
+<<<<<<< Updated upstream
                 if tile == 3:  # 3 had volgens mij nog geen inhoud
                     corona_paars = Vijand(col_count*tile_size, row_count*tile_size, corona_p_img )
                     corona_paars_group.add(corona_paars)
@@ -257,14 +290,27 @@ class World:
                 if tile == 6:  # 4 had volgens mij nog geen inhoud
                     corona_groen_no_move = Vijand(col_count*tile_size, row_count*tile_size, corona_g_img)
                     corona_groen_no_move_group.add(corona_groen)
+=======
+                if tile == 7:  # deur
+                    img = pygame.transform.scale(deur_img, (tile_size, tile_size))
+                    img_rect = img.get_rect()
+                    img_rect.x = col_count * tile_size
+                    img_rect.y = row_count * tile_size
+                    tile = (img, img_rect)
+                    self.tile_list.append(tile)
+                    self.doorx = col_count * tile_size
+                    self.doory = row_count * tile_size
+
+>>>>>>> Stashed changes
                 col_count += 1
             row_count += 1
-
+        
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
             pygame.draw.rect(screen, (WHITE), tile[1], 2)
 
+<<<<<<< Updated upstream
 def get_color(health):
     color = BLACK
     if health == 100:
@@ -278,6 +324,12 @@ def get_color(health):
     elif health >= 0:
         color = RED
     return color
+=======
+    def getDoorPos(self):
+        return [self.doorx,self.doory]
+
+
+>>>>>>> Stashed changes
 
 # Health bar tekenen (loopt af met stappen van 20)
 def draw_health():
@@ -337,6 +389,7 @@ def hit_cooldown():
 >>>>>>> Stashed changes
 # data van de wereld > bepaald welke afbeelding if tile == waar wordt geplaast.
 world_data = [
+  [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -357,6 +410,7 @@ world_data = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1],
     [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+<<<<<<< Updated upstream
 ]
 
 
@@ -368,10 +422,46 @@ corona_groen_no_move_group =pygame.sprite.Group()
 corona_paars_no_move_group =pygame.sprite.Group()
 
 
+=======
+  ],
+  [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 1],
+    [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  ],
+]
+>>>>>>> Stashed changes
+
+
 
 # Objecten
 player = Player(100, screen_height - 130)
-world = World(world_data)
+
+
+#level 1
+currentLevel = 0
+world = World(world_data[currentLevel])
+
+#als poppetje de deur raakt, moet volgende code uitgevoerd worden. if statement (moet in de mainloop)
+currentLevel += 1
+world = World(world_data[currentLevel])
 
 # Buttons
 start_button = Button(screen_width // 2 - 250, screen_height // 2, start_img)
@@ -382,11 +472,13 @@ menu_button = Button(50, 20, menu_img)
 
 # Game mainloop
 run = True
+draw_world = True
 while run:
 <<<<<<< Updated upstream
     clock.tick
 =======
     
+    print(world.getDoorPos())
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -400,6 +492,7 @@ while run:
 
     
     if main_menu == True:
+<<<<<<< Updated upstream
         if exit_button.draw():
             run = False
         if start_button.draw():
@@ -427,6 +520,40 @@ while run:
         if menu_button.draw():
             main_menu = True
 
+=======
+            if exit_button.draw():
+                run = False
+            if start_button.draw():
+                main_menu = False
+    else: #Indent alles hieronder in de else statement
+        if draw_world == True:
+            world.draw()
+            draw_world = False
+            
+
+
+
+# Deurlocatie bepalen.
+
+    if hitDoor:
+        currentLevel += 1
+        world = World(world_data[currentLevel])
+        hitDoor= False
+
+        draw_world = True
+
+
+    world.draw()  # Plaatsen wereld tegels
+    player.update()  # Plaatsen speler
+
+    draw_health()  # Plaatsen health bar
+
+    if menu_button.draw():
+        main_menu = True
+            
+
+            
+>>>>>>> Stashed changes
     pygame.display.update()  # Update het scherm
 
 pygame.quit()
