@@ -95,7 +95,7 @@ class Player:
 
         for num in range(1, 5):
             img_right = pygame.image.load(
-                f"/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/rutten{num}.png"
+                f"rutten{num}.png"
             )
             img_right = pygame.transform.scale(img_right, (35, 35))
             self.images_right.append(img_right)
