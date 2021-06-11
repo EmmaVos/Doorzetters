@@ -237,7 +237,7 @@ class Deur(pygame.sprite.Sprite):
 
     def __init__(self, x, y, image):
         pygame.sprite.Sprite.__init__(self)
-        self.image = ( image  ##     ## uitzoeken hoe dit werkt met twee verschillende groepen)
+        self.image = image # uitzoeken hoe dit werkt met twee verschillende groepen
         self.image = pygame.transform.scale(image, (35, 35))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -247,7 +247,7 @@ class Deur(pygame.sprite.Sprite):
 class Mondkapje(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         pygame.sprite.Sprite.__init__(self)
-        self.image = (image  ##     ## uitzoeken hoe dit werkt met twee verschillende groepen)
+        self.image = image # uitzoeken hoe dit werkt met twee verschillende groepen
         self.image = pygame.transform.scale(image, (35, 35))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -257,7 +257,7 @@ class Mondkapje(pygame.sprite.Sprite):
 class Vaccin(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         pygame.sprite.Sprite.__init__(self)
-        self.image = (image  ##     ## uitzoeken hoe dit werkt met twee verschillende groepen)
+        self.image = image  # uitzoeken hoe dit werkt met twee verschillende groepen
         self.image = pygame.transform.scale(image, (35, 35))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -267,7 +267,7 @@ class Vaccin(pygame.sprite.Sprite):
 class Vijand(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
         pygame.sprite.Sprite.__init__(self)
-        self.image = (image  ##     ## uitzoeken hoe dit werkt met twee verschillende groepen)
+        self.image = image # uitzoeken hoe dit werkt met twee verschillende groepen
         self.image = pygame.transform.scale(image, (35, 35))
         self.rect = self.image.get_rect()
         self.rect.x = x
