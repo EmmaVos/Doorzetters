@@ -382,6 +382,9 @@ def draw_savings():
         pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 80, 40))
     if player.save == 3:
         pygame.draw.rect(screen, (DARK_GREEN), (240, 20, 120, 40))
+    if player.save >= 3:
+        player.save = 3
+
 
 
 class Button:
