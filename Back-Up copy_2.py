@@ -8,6 +8,10 @@ pygame.init()
 screen_width = 800
 screen_height = 800
 
+# Tijd en frame rate
+clock = pygame.time.Clock()
+fps = 60
+
 # Scherm aanmaken
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("CORONA SPEL DE DOORZETTERS")
@@ -37,7 +41,7 @@ sun_img = pygame.image.load("zon.png")
 bg_img = pygame.image.load("background.png")
 dirt_img = pygame.image.load("modder.png")
 grass_img = pygame.image.load("gras.png")
-rutten_img = pygame.image.load("rutten.png")
+
 
 # startscherm afbeeldingen laden
 start_img_og = pygame.image.load("start.png")
@@ -85,8 +89,18 @@ vaccin_img = pygame.image.load("spuit.png")
 # Player parent class
 class Player:
     def __init__(self, x, y):
-        img = rutten_img
-        self.image = pygame.transform.scale(img, (35, 35))
+        self.images_right = []  # Sprite die naar rechts kijkt
+        self.index = 0  # toegeveogd voor sprite
+        self.counter = 0
+
+        for num in range(1, 5):
+            img_right = pygame.image.load(
+                f"/Users/wout/Desktop/MINOR/Projectkraken/Doorzetters/rutten{num}.png"
+            )
+            img_right = pygame.transform.scale(img_right, (35, 35))
+            self.images_right.append(img_right)
+
+        self.image = self.images_right[self.index]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -102,6 +116,7 @@ class Player:
     def update(self):
         dx = 0
         dy = 0
+        walk_cooldown = 5
 
         # Bewegen
         key = pygame.key.get_pressed()
@@ -115,9 +130,26 @@ class Player:
 
         if key[pygame.K_LEFT]:
             dx -= 5
+            self.counter += 1
 
         if key[pygame.K_RIGHT]:
             dx += 5
+            self.counter += 1
+
+        # reset de afbeelding op rutten1
+        if key[pygame.K_LEFT] == False and key[pygame.K_RIGHT] == False:
+            self.counter = 0
+            self.index = 0
+            self.image = self.images_right[self.index]
+
+        # animatie
+
+        if self.counter > walk_cooldown:
+            self.counter = 0
+            self.index += 1
+            if self.index >= len(self.images_right):
+                self.index = 0
+            self.image = self.images_right[self.index]
 
         # Hoogte springen bepalen
         self.vel_y += 1
@@ -515,6 +547,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
+    clock.tick(fps)  # frames per second aanroepen
     screen.blit(bg_img, (0, 0))  # Plaatsen achtergrond
     screen.blit(sun_img, (100, 100))  # Plaatsen zon
 
