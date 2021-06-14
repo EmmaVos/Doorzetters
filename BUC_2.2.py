@@ -43,7 +43,7 @@ dirt_img = pygame.image.load("modder.png")
 grass_img = pygame.image.load("gras.png")
 
 
-# startscherm afbeeldingen laden
+# Afbeeldingen schermen laden
 start_img_og = pygame.image.load("start.png")
 exit_img_og = pygame.image.load("exit.png")
 menu_img_og = pygame.image.load("menu.png")
@@ -52,8 +52,10 @@ expl_img_og = pygame.image.load("expl.png")
 back_img_og = pygame.image.load("terug.png")
 start_screen_og = pygame.image.load("start_window.png")
 more_vac_img_og = pygame.image.load("more-vaccines.png")
+game_over_img_og = pygame.image.load("game_over.png")
+restart_img_og = pygame.image.load("restart.png")
 
-# Afbeeldingen startscherm sizen
+# Afbeeldingen schermen sizen
 start_img = pygame.transform.scale(start_img_og, (240, 120))
 exit_img = pygame.transform.scale(exit_img_og, (240, 120))
 menu_img = pygame.transform.scale(menu_img_og, (120, 40))
@@ -62,7 +64,8 @@ expl_img = pygame.transform.scale(expl_img_og, (800, 800))
 back_img = pygame.transform.scale(back_img_og, (240, 120))
 start_screen_img = pygame.transform.scale(start_screen_og, (800, 800))
 more_vac_img = pygame.transform.scale(more_vac_img_og, (120, 40))
-
+game_over_img = pygame.transform.scale(game_over_img_og, (400,400))
+restart_img = pygame.transform.scale(restart_img_og,(240,120))
 
 # Countdown afbeeldingen laden
 een_img_og = pygame.image.load("1.png")
@@ -277,7 +280,7 @@ class Player:
             pygame.sprite.spritecollide(self, deur_group, False)
             and self.is_hit == False
         ):
-            if player.save == 3:
+            if player.save == 3 and player.health > 0:
                 Deur.is_hit = True
                 self.is_hit = True
                 print(Deur.is_hit)
@@ -564,6 +567,7 @@ exit_button = Button(450, 340, exit_img)
 menu_button = Button(20, 20, menu_img)
 start_game_button = Button(460, 630, start_game_img)
 back_button = Button(100, 630, back_img)
+restart_button = Button(460,630, restart_img)
 
 world = World(world_data[currentLevel])
 
@@ -590,6 +594,9 @@ while run:
         screen.blit(expl_img, (0, 0))
         if start_game_button.draw():
             expl_menu = False
+            currentLevel = 0
+            player = Player(100, screen_height - 100)
+            world = World(world_data[currentLevel])
             play_timer = True
         if back_button.draw():
             expl_menu = False
@@ -621,13 +628,16 @@ while run:
             world = World(world_data[currentLevel])
             player = Player(100, screen_height - 100)
             Deur.is_hit = False
-        # Reset
-        if player.health <= 0:
-            player = Player(100, screen_height - 100)
-        # elif Deur.is_hit == False:
-        #     screen.blit(menu_img, (200,200))
+
 
         player.update()
+
+        if player.health <= 0:
+            screen.blit(game_over_img, (100,100))
+            if restart_button.draw():
+                player = Player(100, screen_height - 100)
+                currentLevel = 0
+                world = World(world_data[currentLevel])
 
         hit_cooldown()
 
