@@ -271,11 +271,18 @@ class Player:
             self.health += 20
             self.is_hit = True
             self.hit_time = pygame.time.get_ticks() + 1000
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(verzamel_mondkap)
+            pygame.mixer.music.play()
+
 
         if (pygame.sprite.spritecollide(self, vaccin_group_2, False)and self.is_hit == False):
             self.save += 1
             self.is_hit = True
             self.hit_time = pygame.time.get_ticks() + 1000
+            pygame.mixer.music.stop()
+            pygame.mixer.Sound.play(verzamel_vaccin)
+            pygame.mixer.music.play()
 
         if (pygame.sprite.spritecollide(self, deur_group_2, False)and self.is_hit == False):
             if player.save == 3:
