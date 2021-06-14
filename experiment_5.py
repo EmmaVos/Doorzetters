@@ -53,8 +53,10 @@ expl_img_og = pygame.image.load("expl.png")
 back_img_og = pygame.image.load("terug.png")
 start_screen_og = pygame.image.load("start_window.png")
 more_vac_img_og = pygame.image.load("more-vaccines.png")
+#-------------------------------------------------------------------------------------------------------------
 game_over_img_og = pygame.image.load("game-over-window.png")
 restart_img_og = pygame.image.load("reset-game.png")
+#-------------------------------------------------------------------------------------------------------------
 
 # Afbeeldingen schermen sizen
 start_img = pygame.transform.scale(start_img_og, (240, 120))
@@ -65,9 +67,10 @@ expl_img = pygame.transform.scale(expl_img_og, (800, 800))
 back_img = pygame.transform.scale(back_img_og, (240, 120))
 start_screen_img = pygame.transform.scale(start_screen_og, (800, 800))
 more_vac_img = pygame.transform.scale(more_vac_img_og, (120, 40))
+#-------------------------------------------------------------------------------------------------------------
 game_over_img = pygame.transform.scale(game_over_img_og, (400,400))
 restart_img = pygame.transform.scale(restart_img_og,(240,120))
-
+#-------------------------------------------------------------------------------------------------------------
 
 # Countdown afbeeldingen laden
 een_img_og = pygame.image.load("1.png")
@@ -619,7 +622,9 @@ exit_button = Button(450, 340, exit_img)
 menu_button = Button(20, 20, menu_img)
 start_game_button = Button(460, 630, start_game_img)
 back_button = Button(100, 630, back_img)
+#-------------------------------------------------------------------------------------------------------------
 restart_button = Button(280,630, restart_img)
+#-------------------------------------------------------------------------------------------------------------
 
 world = World(world_data[currentLevel])
 
@@ -646,9 +651,11 @@ while run:
         screen.blit(expl_img, (0, 0))
         if start_game_button.draw():
             expl_menu = False
+#-------------------------------------------------------------------------------------------------------------
             currentLevel = 0
             player = Player(100, screen_height - 100)
             world = World(world_data[currentLevel])
+#-------------------------------------------------------------------------------------------------------------
             play_timer = True
         if back_button.draw():
             expl_menu = False
@@ -665,13 +672,14 @@ while run:
             Deur.is_hit = False
 
         player.update()
-
+#-------------------------------------------------------------------------------------------------------------
         if player.health <= 0:
             screen.blit(game_over_img, (200,200))
             if restart_button.draw():
                 player = Player(100, screen_height - 100)
                 currentLevel = 0
                 world = World(world_data[currentLevel])
+#-------------------------------------------------------------------------------------------------------------
 
         hit_cooldown()
 
