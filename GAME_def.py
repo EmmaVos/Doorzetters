@@ -555,6 +555,13 @@ def draw_groups():
     mondkapje_group.draw(screen)
     vaccin_group.draw(screen)
 
+
+    corona_o_group.empty()
+    corona_p_group.empty()
+    deur_group_2.empty()
+    mondkapje_group_2.empty()
+    vaccin_group_2.empty()
+
 def draw_groups_1():
     corona_o_group.draw(screen)
     corona_o_group.update()
